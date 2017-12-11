@@ -24,10 +24,10 @@
 		.org 0x00
 			jmp main
 
-		.org 0x02       ;quando clicas no sw1
+		.org 0x02               ;when you click sw1
 			jmp INT_int0
 		
-		.org 0x04		;quando clicas no sw2	
+		.org 0x04		;when you click sw2	
 			jmp INT_int1
 			
 		.org 0x16
@@ -78,7 +78,7 @@
 		FlagStartON:	ldi seg,9			//SEG=9
 						ldi cont_1s,100		//count_1s=500
 						ldi ESTADO,RUNNING
-						set				//LIMPAR A FLAG
+						set				//LCLEAN FLAG
 						call display		//Display
 
 
@@ -113,46 +113,46 @@
 					
 		
 		INT_int0:
-					push vari			;guardar registos
-					in vari, SREG		;guardar registos
-					push vari			;guardar registos
+					push vari			;save records
+					in vari, SREG		        ;save records
+					push vari			;save records
 					
-					ldi ESTADO,START		;ATIVA A FLAG START
-					ldi vari,0xFF			;LIMPA EIFR
-					out EIFR,vari			;LIMPA EIFR
+					ldi ESTADO,START		;ACTIVATE A FLAG START
+					ldi vari,0xFF			;CLEANS EIFR
+					out EIFR,vari			;cLEANS EIFR
 					
-					sbr vari,0b00000001			;Desativar INT0
+					sbr vari,0b00000001			;Deactivates INT0
 					out EIMSK,vari
-					cbr vari,0b00000011			;Ativar INT1
+					cbr vari,0b00000011			;Activates INT1
 					out EIMSK,vari
-					pop vari			;recupera registos	
-					out SREG,vari		;recupera registos
-					pop vari			;recupera registos
+					pop vari			;retrieve records	
+					out SREG,vari		        ;retrieve records
+					pop vari			;retrieve records
 					reti
 					
 		INT_int1:		
-					push vari			;guardar registos
-					in vari, SREG		;guardar registos
-					push vari			;guardar registos
+					push vari			;save records
+					in vari, SREG		        ;save records
+					push vari			;save records
 					
-					ldi ESTADO,STOP		;ATIVA A FLAG STOP
-					ldi vari,0xFF			;LIMPA EIFR
-					out EIFR,vari			;LIMPA EIFR
+					ldi ESTADO,STOP		;ACTIVATE FLAG STOP
+					ldi vari,0xFF			;CLEANS EIFR
+					out EIFR,vari			;CLEANS EIFR
 					
-					sbr vari,0b00000011			;Desativar INT1
+					sbr vari,0b00000011			;Deactivate INT1
 					out EIMSK,vari
-					cbr vari,0b00000001			;Ativar INT0
+					cbr vari,0b00000001			;Activate INT0
 					out EIMSK,vari
-					pop vari			;recupera registos	
-					out SREG,vari		;recupera registos
-					pop vari			;recupera registos
+					pop vari			;save records	
+					out SREG,vari		;save records
+					pop vari			;save records
 					reti	
-		int_tc0:						//passam 500ms 
+		int_tc0:						//500ms pass 
 				push r17
-		decv:		dec cont_1s		;verifica se passaram 500ms
+		decv:		dec cont_1s		;check if 500ms have passed
 					cpi cont_1s,0
 					brne decv
-					ldi cont_1s,250  ;recarrega o contador de interrupções
+					ldi cont_1s,250  ;reloads the interrupt counter
 					set	
 				pop r17	
 					reti
