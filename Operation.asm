@@ -2,19 +2,19 @@
 		.def CONTL = r24
 		.def CONTH = r25
 		.def vari = r17
-		.def seg=	r16
+		.def seg=r16
 		.def cont_1s = r20				;cont_1s =r20
-		.def ESTADO = r18
+		.def STATE = r18
 		.equ ZERO=0xC0
-		.equ UM=0xF9
-		.equ DOIS=0xA4
-		.equ TRES=0xB0
-		.equ QUATRO=0x99
-		.equ CINCO=0x92
-		.equ SEIS=0x82
-		.equ SETE=0xF8
-		.equ OITO=0x80
-		.equ NOVE=0x90
+		.equ ONE=0xF9
+		.equ TWO=0xA4
+		.equ THREE=0xB0
+		.equ FOUR=0x99
+		.equ FIVE=0x92
+		.equ SIX=0x82
+		.equ SEVEN=0xF8
+		.equ EIGHT=0x80
+		.equ NINE=0x90
 
 		.equ START=0
 		.equ RUNNING=1
@@ -72,20 +72,20 @@
 	  				out SPH,	r21
 
 	  				call ini
-					cpi ESTADO, START	// Flag start on?
+					cpi STATE, START	// Flag start on?
 					brne FlagStopON
 					
 		FlagStartON:	ldi seg,9			//SEG=9
 						ldi cont_1s,100		//count_1s=500
-						ldi ESTADO,RUNNING
-						set				//LCLEAN FLAG
+						ldi STATE,RUNNING
+						set				//CLEAN FLAG
 						call display		//Display
 
 
-		FlagStopON:		cpi ESTADO, STOP	//Flag stop on?
+		FlagStopON:		cpi STATE, STOP	//Flag stop on?
 						brne Flag_1sON		
 
-		Pisca_ponto: ldi vari,0b11111110
+		Flashes_point: ldi vari,0b11111110
 					 out PORTC,vari
 					 call int_tc0
 					 ser vari
@@ -102,13 +102,13 @@
 					brne FlagStartON
 					ldi r22,3
 					ser vari
-		Pisca_display:	 
+		Flashes_display:	 
 						out PORTC,vari
 						;delay2
 						call display
 						dec r22
 						cpi r22,0
-						brne Pisca_display
+						brne Flashes_display
 						jmp FlagStartON
 					
 		
@@ -135,7 +135,7 @@
 					in vari, SREG		        ;save records
 					push vari			;save records
 					
-					ldi ESTADO,STOP		;ACTIVATE FLAG STOP
+					ldi STATE,STOP		;ACTIVATE STOP FLAG
 					ldi vari,0xFF			;CLEANS EIFR
 					out EIFR,vari			;CLEANS EIFR
 					
@@ -164,57 +164,57 @@
 
 
 		display:
-					nove_:	    
+					nine_:	    
 								cpi  r16, 9
-								brne oito_
-								ldi  r17, NOVE
-								jmp  saida
-					oito_:
+								brne eight_
+								ldi  r17, NINE
+								jmp  exit
+					eight_:
 								cpi  r16, 8
-								brne sete_
-								ldi  r17, OITO
-								jmp  saida
-					sete_:
+								brne seven_
+								ldi  r17, EIGHT
+								jmp  exit
+					seven_:
 								cpi  r16, 7
-								brne seis_
-								ldi  r17, SETE
-								jmp  saida
-					seis_:
+								brne six_
+								ldi  r17, SEVEN
+								jmp  exit
+					six_:
 					 			cpi  r16, 6
-								brne cinco_
-								ldi  r17, SEIS
-								jmp  saida
-					cinco_:
+								brne five_
+								ldi  r17, SIX
+								jmp  exit
+					five_:
 								cpi  r16, 5
-								brne quatro_
-								ldi  r17, CINCO
-								jmp  saida
-					quatro_:
+								brne four_
+								ldi  r17, FIVE
+								jmp  exit
+					four_:
 								cpi  r16, 4
-								brne tres_
-								ldi  r17, QUATRO
-								jmp  saida
-					tres_:
+								brne three_
+								ldi  r17, FOUR
+								jmp  exit
+					three_:
 								cpi  r16, 3
-								brne dois_
-								ldi  r17, TRES
-								jmp  saida
-					dois_:
+								brne two_
+								ldi  r17, THREE
+								jmp  exit
+					two_:
 								cpi  r16, 2
-								brne um_
-								ldi  r17, DOIS
-								jmp  saida
-					um_:
+								brne one_
+								ldi  r17, TWO
+								jmp  exit
+					one_:
 								cpi  r16, 1
 								brne zero_
-								ldi  r17, UM
-								jmp  saida
+								ldi  r17, ONE
+								jmp  exit
 					zero_:
 								cpi  r16, 0
-								brne saida
+								brne exit
 								ldi  r17, ZERO
-								jmp  saida
+								jmp  exit
 
-					saida:
+					exit:
 								out PORTC,	r17
 								ret
